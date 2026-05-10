@@ -1,0 +1,144 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  transition: background-color 0.6s var(--ease-inout),
+              color 0.6s var(--ease-inout);
+}
+
+/* Film grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.03;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 999px; }
+
+/* ── Selection ─────────────────────────────────────────── */
+::selection { background: rgba(201, 168, 76, 0.25); color: var(--text-primary); }
+
+/* ── Typography utilities ──────────────────────────────── */
+.font-arabic  { font-family: var(--font-arabic);  direction: rtl; }
+.font-display { font-family: var(--font-display); }
+.font-body    { font-family: var(--font-body); }
+.font-mono    { font-family: var(--font-mono); }
+
+.text-display-xl { font-family: var(--font-display); font-size: var(--fs-display-xl); line-height: var(--leading-display); letter-spacing: 0.02em; }
+.text-display-lg { font-family: var(--font-display); font-size: var(--fs-display-lg); line-height: var(--leading-display); }
+.text-display    { font-family: var(--font-display); font-size: var(--fs-display);    line-height: var(--leading-display); }
+.text-h1         { font-family: var(--font-display); font-size: var(--fs-h1);         line-height: 1.2; }
+.text-h2         { font-family: var(--font-display); font-size: var(--fs-h2);         line-height: 1.25; }
+.text-arabic-xl  { font-family: var(--font-arabic);  font-size: var(--fs-arabic-xl);  line-height: var(--leading-arabic); direction: rtl; }
+.text-arabic-lg  { font-family: var(--font-arabic);  font-size: var(--fs-arabic-lg);  line-height: var(--leading-arabic); direction: rtl; }
+.text-body-lg    { font-family: var(--font-body);    font-size: var(--fs-body-lg);    line-height: var(--leading-body); }
+.text-body       { font-family: var(--font-body);    font-size: var(--fs-body);       line-height: var(--leading-body); }
+.text-meta       { font-family: var(--font-mono);    font-size: var(--fs-meta); }
+.text-badge      { font-family: var(--font-mono);    font-size: var(--fs-badge); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+
+/* ── Glass card surface ────────────────────────────────── */
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 24px;
+  transition: background 0.3s var(--ease-out),
+              border-color 0.3s var(--ease-out),
+              box-shadow 0.3s var(--ease-out),
+              transform 0.3s var(--ease-out);
+}
+
+.glass-card:hover {
+  background: var(--glass-strong);
+  border-color: var(--glass-border-hot);
+  box-shadow: var(--shadow-card), var(--glow-gold);
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* ── Gradient border (animated) ────────────────────────── */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.border-gradient-animated {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--bg-card, rgba(255,255,255,0.05)), var(--bg-card, rgba(255,255,255,0.05))) padding-box,
+    conic-gradient(from var(--angle), #C9A84C, #FFD700, #8B6F2A, #C9A84C) border-box;
+  animation: gradientRot 6s linear infinite;
+}
+
+/* ── Keyframes ─────────────────────────────────────────── */
+@keyframes gradientRot  { to { --angle: 360deg; } }
+@keyframes float        { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
+@keyframes twinkle      { 0%,100%{opacity:.2;transform:scale(1)} 50%{opacity:1;transform:scale(1.4)} }
+@keyframes driftUp      { 0%{transform:translateY(100vh) scale(.5);opacity:0} 10%{opacity:1} 90%{opacity:.6} 100%{transform:translateY(-10vh) scale(1);opacity:0} }
+@keyframes pulseGlow    { 0%,100%{box-shadow:0 0 24px rgba(201,168,76,.25)} 50%{box-shadow:0 0 60px rgba(201,168,76,.5)} }
+@keyframes shimmer      { 0%{background-position:-200% center} 100%{background-position:200% center} }
+@keyframes slideUp      { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes revealPaper  { 0%{opacity:0;transform:perspective(800px) rotateX(40deg) translateY(40px) scale(.9)} 100%{opacity:1;transform:perspective(800px) rotateX(0) translateY(0) scale(1)} }
+@keyframes jarBob       { 0%,100%{transform:translateY(0) rotateY(0deg)} 50%{transform:translateY(-12px) rotateY(180deg)} }
+@keyframes fadeIn       { from{opacity:0} to{opacity:1} }
+@keyframes scaleIn      { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
+
+/* ── Utility animations ────────────────────────────────── */
+.animate-float         { animation: float        4s var(--ease-inout) infinite; }
+.animate-twinkle       { animation: twinkle      6s ease-in-out infinite; }
+.animate-drift         { animation: driftUp      16s linear infinite; }
+.animate-pulse-glow    { animation: pulseGlow    3s ease-in-out infinite; }
+.animate-slide-up      { animation: slideUp      0.6s var(--ease-out) both; }
+.animate-scale-in      { animation: scaleIn      0.5s var(--ease-out) both; }
+.animate-reveal-paper  { animation: revealPaper  0.8s var(--ease-out) both; }
+.animate-jar-bob       { animation: jarBob       4s var(--ease-inout) infinite; }
+.animate-fade-in       { animation: fadeIn       0.4s ease both; }
+
+/* ── Gold shimmer text ─────────────────────────────────── */
+.text-gold-shimmer {
+  background: linear-gradient(90deg, #C9A84C 0%, #FFD700 40%, #C9A84C 60%, #8B6F2A 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Joy shimmer for day mode */
+.light .text-gold-shimmer {
+  background: linear-gradient(90deg, #4ECDC4 0%, #7EDDD7 40%, #4ECDC4 60%, #2BA8A0 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Layout helpers ────────────────────────────────────── */
+.content-max  { max-width: var(--content-max); margin-inline: auto; padding-inline: 24px; }
+.section-pad  { padding-block: clamp(4rem, 10vw, 8rem); }

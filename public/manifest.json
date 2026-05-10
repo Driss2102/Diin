@@ -1,0 +1,12 @@
+{
+  "name": "Qalbi — Mon Cœur",
+  "short_name": "قلبي",
+  "description": "Une expérience islamique spirituellement immersive",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A1A",
+  "theme_color": "#C9A84C",
+  "icons": [
+    { "src": "/crescent.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

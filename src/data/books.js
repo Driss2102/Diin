@@ -1,0 +1,32 @@
+export const BOOKS = [
+  {
+    id: 'maa_annabi',
+    titleAr: 'مع النبي ﷺ',
+    titleFr: 'Avec le Prophète ﷺ',
+    author: 'Foulabook',
+    file: '/books/maa_annabi.pdf',
+    color: '#C9A84C',
+    description: 'Récits et anecdotes de la vie du Prophète Muhammad ﷺ',
+    lang: 'ar',
+  },
+  {
+    id: 'yawm_fi_bayt_annabi',
+    titleAr: 'يوم في بيت النبي ﷺ',
+    titleFr: "Un jour dans la maison du Prophète ﷺ",
+    author: '',
+    file: '/books/yawm_fi_bayt_annabi.pdf',
+    color: '#A0784A',
+    description: "Description d'une journée dans la demeure du Prophète ﷺ",
+    lang: 'ar',
+  },
+  {
+    id: '356_yawman',
+    titleAr: '٣٥٦ يوماً مع خاتم الأنبياء ﷺ',
+    titleFr: '356 jours avec le Sceau des Prophètes ﷺ',
+    author: '',
+    file: '/books/356_yawman.pdf',
+    color: '#8B5E3C',
+    description: 'Un voyage quotidien en compagnie du Prophète ﷺ — 391 pages',
+    lang: 'ar',
+  },
+]

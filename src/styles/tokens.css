@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════════════
+   Qalbi — Design Tokens
+   Night mode (dark class) + Day mode (light class)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── NIGHT MODE (default) ─────────────────────────────── */
+:root,
+.dark {
+  --bg-primary:        #0A0A1A;
+  --bg-secondary:      #0D1B4B;
+  --bg-tertiary:       #050510;
+  --bg-card:           rgba(255, 255, 255, 0.05);
+  --bg-card-hover:     rgba(255, 255, 255, 0.08);
+
+  --accent-gold:       #C9A84C;
+  --accent-gold-light: #FFD700;
+  --accent-gold-deep:  #8B6F2A;
+
+  /* Day-mode accent kept as reference, unused in night */
+  --accent-joy:        #4ECDC4;
+  --accent-joy-light:  #7EDDD7;
+  --accent-joy-deep:   #2BA8A0;
+
+  --text-primary:      #F5F0E8;
+  --text-secondary:    #A8B5C8;
+  --text-tertiary:     #6B7488;
+  --text-on-gold:      #0A0A1A;
+  --text-on-joy:       #0A0A1A;
+
+  --glass:             rgba(255, 255, 255, 0.05);
+  --glass-strong:      rgba(255, 255, 255, 0.08);
+  --glass-border:      rgba(201, 168, 76, 0.30);
+  --glass-border-soft: rgba(201, 168, 76, 0.15);
+  --glass-border-hot:  rgba(201, 168, 76, 0.60);
+  --hairline:          rgba(245, 240, 232, 0.08);
+  --overlay-scrim:     rgba(10, 10, 26, 0.72);
+
+  --nav-blur:          blur(16px);
+  --card-blur:         blur(24px);
+  --modal-blur:        blur(40px);
+
+  --shadow-card:       0 24px 60px rgba(0, 0, 0, 0.45);
+  --glow-gold:         0 0 60px rgba(201, 168, 76, 0.30);
+  --glow-gold-sm:      0 0 24px rgba(201, 168, 76, 0.25);
+  --glow-gold-lg:      0 0 120px rgba(255, 215, 0, 0.20);
+  --glow-joy:          0 0 60px rgba(78, 205, 196, 0.35);
+
+  --star-opacity:      0.9;
+  --particle-color:    rgba(201, 168, 76, 0.6);
+  --halo-color:        radial-gradient(ellipse 60% 40% at 50% 100%,
+                         rgba(201, 168, 76, 0.18) 0%,
+                         transparent 70%);
+}
+
+/* ── DAY MODE — lin brume + or (reposant pour les yeux) ── */
+.light {
+  --bg-primary:        #F5F2ED;
+  --bg-secondary:      #EBE6DA;
+  --bg-tertiary:       #FAF8F5;
+  --bg-card:           rgba(236, 231, 220, 0.78);
+  --bg-card-hover:     rgba(236, 231, 220, 0.95);
+
+  --accent-gold:       #C9A84C;
+  --accent-gold-light: #E8B84B;
+  --accent-gold-deep:  #8B6F2A;
+
+  --accent-joy:        #C9A84C;
+  --accent-joy-light:  #E8B84B;
+  --accent-joy-deep:   #8B6F2A;
+
+  --text-primary:      #28211A;
+  --text-secondary:    #67563E;
+  --text-tertiary:     #9E8C74;
+  --text-on-gold:      #FAF8F5;
+  --text-on-joy:       #FAF8F5;
+
+  --glass:             rgba(240, 235, 225, 0.68);
+  --glass-strong:      rgba(240, 235, 225, 0.92);
+  --glass-border:      rgba(201, 168, 76, 0.28);
+  --glass-border-soft: rgba(201, 168, 76, 0.14);
+  --glass-border-hot:  rgba(201, 168, 76, 0.55);
+  --hairline:          rgba(40, 33, 26, 0.07);
+  --overlay-scrim:     rgba(245, 242, 237, 0.85);
+
+  --nav-blur:          blur(16px);
+  --card-blur:         blur(20px);
+  --modal-blur:        blur(32px);
+
+  --shadow-card:       0 12px 40px rgba(80, 60, 30, 0.10);
+  --glow-gold:         0 0 40px rgba(201, 168, 76, 0.22);
+  --glow-gold-sm:      0 0 16px rgba(201, 168, 76, 0.18);
+  --glow-gold-lg:      0 0 80px rgba(201, 168, 76, 0.18);
+  --glow-joy:          0 0 40px rgba(201, 168, 76, 0.22);
+
+  --star-opacity:      0.15;
+  --particle-color:    rgba(201, 168, 76, 0.40);
+  --halo-color:        radial-gradient(ellipse 60% 40% at 50% 100%,
+                         rgba(201, 168, 76, 0.10) 0%,
+                         transparent 70%);
+}
+
+/* ── Mood palette (shared) ────────────────────────────── */
+:root {
+  --mood-heureux:       #FFD700;
+  --mood-triste:        #4A90D9;
+  --mood-colere:        #C0392B;
+  --mood-effraye:       #6C3483;
+  --mood-reconnaissant: #27AE60;
+  --mood-solitaire:     #5D6D7E;
+  --mood-anxieux:       #E67E22;
+  --mood-espoir:        #00CED1;
+  --mood-pardon:        #E8A0B4;
+
+  --mood-current:       var(--accent-gold);
+}
+
+/* ── Typography ───────────────────────────────────────── */
+:root {
+  --font-arabic:  'Amiri', 'Scheherazade New', serif;
+  --font-display: 'Cinzel Decorative', 'Cinzel', serif;
+  --font-body:    'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  --font-mono:    'DM Mono', 'JetBrains Mono', monospace;
+
+  --fs-display-xl: clamp(3.5rem, 8vw, 6rem);
+  --fs-display-lg: clamp(2.5rem, 5vw, 4.5rem);
+  --fs-display:    clamp(2rem,   4vw, 3rem);
+  --fs-h1:         clamp(1.75rem, 3vw, 2.25rem);
+  --fs-h2:         clamp(1.375rem, 2.5vw, 1.75rem);
+  --fs-arabic-xl:  clamp(2rem, 4vw, 3rem);
+  --fs-arabic-lg:  clamp(1.5rem, 3vw, 2rem);
+  --fs-body-lg:    1.375rem;
+  --fs-body:       1.125rem;
+  --fs-body-sm:    1rem;
+  --fs-meta:       0.875rem;
+  --fs-mono:       0.8125rem;
+  --fs-badge:      0.6875rem;
+
+  --tracking-caps: 0.18em;
+  --leading-arabic: 2.5;
+  --leading-display: 1.05;
+  --leading-body: 1.55;
+
+  --content-max:   700px;
+  --nav-height:    72px;
+
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
