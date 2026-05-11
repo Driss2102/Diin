@@ -13,6 +13,23 @@ import * as pdfjsLib from 'pdfjs-dist'
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
 
+/* ─── Cache de preload ───────────────────────────────────────
+ * Quand l'utilisateur touche une carte, on démarre le téléchargement
+ * AVANT que le reader s'ouvre. Quand PdfViewer monte, la tâche existe
+ * déjà → page 1 visible bien plus vite.
+ * ─────────────────────────────────────────────────────────── */
+const _preloadCache = {}
+
+export function preloadPdf(src) {
+  if (_preloadCache[src]) return                        // déjà en cours
+  const absUrl = src.startsWith('http') ? src : `${window.location.origin}${src}`
+  _preloadCache[src] = pdfjsLib.getDocument({
+    url:        absUrl,
+    cMapUrl:    `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/cmaps/`,
+    cMapPacked: true,
+  })
+}
+
 /* ─── Page individuelle ─────────────────────────────────── */
 function PdfPage({ pdf, pageNum, width }) {
   const canvasRef = useRef(null)
@@ -94,7 +111,8 @@ export default function PdfViewer({ src, color }) {
     ;(async () => {
       try {
         const absUrl = src.startsWith('http') ? src : `${window.location.origin}${src}`
-        task = pdfjsLib.getDocument({
+        /* Réutilise la tâche préchargée si disponible, sinon en crée une nouvelle */
+        task = _preloadCache[src] ?? pdfjsLib.getDocument({
           url:        absUrl,
           cMapUrl:    `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/cmaps/`,
           cMapPacked: true,

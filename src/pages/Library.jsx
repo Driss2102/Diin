@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { BookOpen } from 'lucide-react'
 import { BOOKS } from '../data/books'
 import { useLibraryStore } from '../store/useLibraryStore'
+import { preloadPdf } from '../components/Reader/PdfViewer'
 
 export default function Library() {
   const openBook_set = useLibraryStore(s => s.openBook_set)
@@ -44,6 +45,7 @@ export default function Library() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+              onPointerDown={() => preloadPdf(book.file)}
               onClick={() => openBook_set(book)}
               className="w-full text-left rounded-card overflow-hidden transition-all duration-200 hover:scale-[1.015] active:scale-[0.985]"
               style={{
