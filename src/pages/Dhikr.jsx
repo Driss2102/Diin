@@ -4,7 +4,6 @@ import { RotateCcw, Plus } from 'lucide-react'
 import MandalaDrawing from '../components/Dhikr/MandalaDrawing'
 import { useDhikrStore, DHIKR_ITEMS } from '../store/useDhikrStore'
 import { useAppStore } from '../store/useAppStore'
-import { useSoundEffect } from '../hooks/useSoundEffect'
 
 export default function Dhikr() {
   const {
@@ -15,7 +14,6 @@ export default function Dhikr() {
 
   const theme   = useAppStore(s => s.theme)
   const isDay   = theme === 'light'
-  const { play } = useSoundEffect()
 
   const item  = currentItem()
   const count = currentCount()
@@ -24,13 +22,11 @@ export default function Dhikr() {
   const [pulse, setPulse] = useState(0)
 
   const handleTap = useCallback(() => {
-    play('select')
     increment()
     setPulse(p => p + 1)
-  }, [increment, play])
+  }, [increment])
 
   const handleReset = () => {
-    play('paper')
     reset()
     setPulse(0)
   }

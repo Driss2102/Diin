@@ -1,13 +1,8 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { X } from 'lucide-react'
+import PdfViewer from './PdfViewer'
 
 export default function PdfReader({ book, onClose }) {
-  const [loaded, setLoaded] = useState(false)
-
-  /* URL avec paramètres pour masquer la toolbar du navigateur */
-  const src = `${book.file}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -28,7 +23,6 @@ export default function PdfReader({ book, onClose }) {
           borderBottom:         `1px solid ${book.color}40`,
         }}
       >
-        {/* Fermer */}
         <button
           onClick={onClose}
           className="w-9 h-9 flex items-center justify-center rounded-full transition-all hover:scale-110 active:scale-90"
@@ -41,7 +35,6 @@ export default function PdfReader({ book, onClose }) {
           <X size={17} />
         </button>
 
-        {/* Titre */}
         <p
           className="font-arabic flex-1 text-center px-2"
           style={{
@@ -53,54 +46,16 @@ export default function PdfReader({ book, onClose }) {
           {book.titleAr}
         </p>
 
-        {/* Spacer symétrique */}
         <div style={{ width: 36 }} />
       </div>
 
-      {/* ── Barre de progression couleur ─────────────────── */}
-      <div
-        className="shrink-0"
-        style={{ height: 2, background: `${book.color}30` }}
-      >
+      {/* ── Barre couleur ────────────────────────────────── */}
+      <div className="shrink-0" style={{ height: 2, background: `${book.color}30` }}>
         <div style={{ width: '100%', height: '100%', background: book.color, opacity: 0.6 }} />
       </div>
 
-      {/* ── Indicateur de chargement ─────────────────────── */}
-      {!loaded && (
-        <div
-          className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 pointer-events-none"
-          style={{ top: 58, background: 'var(--bg-primary)' }}
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            style={{ fontSize: 40, color: book.color }}
-          >
-            ☪
-          </motion.div>
-          <p
-            className="font-body italic"
-            style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)' }}
-          >
-            Chargement du livre…
-          </p>
-        </div>
-      )}
-
-      {/* ── Lecteur PDF natif ─────────────────────────────── */}
-      <iframe
-        src={src}
-        title={book.titleAr}
-        onLoad={() => setLoaded(true)}
-        style={{
-          flex:    1,
-          border:  'none',
-          width:   '100%',
-          opacity: loaded ? 1 : 0,
-          transition: 'opacity 0.4s ease',
-          background: 'var(--bg-tertiary)',
-        }}
-      />
+      {/* ── Viewer PDF.js — fonctionne iOS + Android + Desktop ── */}
+      <PdfViewer src={book.file} color={book.color} />
     </motion.div>
   )
 }
