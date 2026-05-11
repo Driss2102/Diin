@@ -1,15 +1,17 @@
 /**
  * PdfViewer — rendu PDF universel via PDF.js (iOS + Android + Desktop)
- * Pages rendues en Canvas, lazy (IntersectionObserver) pour économiser la mémoire.
+ * - Worker chargé depuis CDN (fiable sur mobile)
+ * - PDFs linéarisés → page 1 visible sans attendre le téléchargement complet
+ * - Pages rendues lazily via IntersectionObserver
+ * - Barre de progression pendant le téléchargement
  */
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import * as pdfjsLib from 'pdfjs-dist'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString()
+/* Worker CDN — plus fiable sur mobile que le bundle Vite */
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
 
 /* ─── Page individuelle ─────────────────────────────────── */
 function PdfPage({ pdf, pageNum, width }) {
@@ -27,7 +29,6 @@ function PdfPage({ pdf, pageNum, width }) {
         if (!entry.isIntersecting || doneRef.current || cancelled) return
         doneRef.current = true
         observer.disconnect()
-
         try {
           const page     = await pdf.getPage(pageNum)
           if (cancelled) return
@@ -57,7 +58,7 @@ function PdfPage({ pdf, pageNum, width }) {
         width:        '100%',
         background:   '#fff',
         marginBottom: 3,
-        minHeight:    Math.round(width * 1.414), /* placeholder A4 en attendant le rendu */
+        minHeight:    Math.round(width * 1.414),
         lineHeight:   0,
       }}
     >
@@ -68,14 +69,15 @@ function PdfPage({ pdf, pageNum, width }) {
 
 /* ─── Viewer principal ──────────────────────────────────── */
 export default function PdfViewer({ src, color }) {
-  const containerRef            = useRef(null)
-  const [pdf,      setPdf]      = useState(null)
-  const [numPages, setNumPages] = useState(0)
-  const [loading,  setLoading]  = useState(true)
-  const [error,    setError]    = useState(null)
-  const [width,    setWidth]    = useState(0)
+  const containerRef              = useRef(null)
+  const [pdf,      setPdf]        = useState(null)
+  const [numPages, setNumPages]   = useState(0)
+  const [loading,  setLoading]    = useState(true)
+  const [progress, setProgress]   = useState(0)
+  const [error,    setError]      = useState(null)
+  const [width,    setWidth]      = useState(0)
 
-  /* Largeur du conteneur (responsive, remesurée au resize) */
+  /* Largeur responsive */
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
@@ -85,21 +87,29 @@ export default function PdfViewer({ src, color }) {
     return () => ro.disconnect()
   }, [])
 
-  /* Chargement du PDF */
+  /* Chargement PDF avec progression */
   useEffect(() => {
     let task
-    setLoading(true); setError(null); setPdf(null)
+    setLoading(true); setError(null); setPdf(null); setProgress(0)
     ;(async () => {
       try {
-        task      = pdfjsLib.getDocument({
-          url:         src,
-          cMapUrl:     'https://cdn.jsdelivr.net/npm/pdfjs-dist@5/cmaps/',
-          cMapPacked:  true,
+        const absUrl = src.startsWith('http') ? src : `${window.location.origin}${src}`
+        task = pdfjsLib.getDocument({
+          url:        absUrl,
+          cMapUrl:    `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/cmaps/`,
+          cMapPacked: true,
         })
+        /* Progression du téléchargement */
+        task.onProgress = ({ loaded, total }) => {
+          if (total > 0) setProgress(Math.min(99, Math.round((loaded / total) * 100)))
+        }
         const doc = await task.promise
+        setProgress(100)
         setPdf(doc); setNumPages(doc.numPages); setLoading(false)
-      } catch {
-        setError('Impossible de charger le livre.'); setLoading(false)
+      } catch (e) {
+        console.error('PDF load error:', e)
+        setError(`Erreur de chargement — ${e?.message || 'vérifiez votre connexion'}`)
+        setLoading(false)
       }
     })()
     return () => { try { task?.destroy() } catch {} }
@@ -114,32 +124,59 @@ export default function PdfViewer({ src, color }) {
         overflowX:  'hidden',
         background: '#1e1e1e',
         WebkitOverflowScrolling: 'touch',
+        position:   'relative',
       }}
     >
-      {/* Chargement */}
+      {/* ── Chargement avec barre de progression ── */}
       {loading && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: 16 }}>
+        <div style={{
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          height: '70vh', gap: 20, padding: '0 32px',
+        }}>
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            style={{ fontSize: 40, color }}
+            style={{ fontSize: 44, color }}
           >
             ☪
           </motion.div>
-          <p style={{ fontSize: '0.9rem', color: '#aaa', fontStyle: 'italic' }}>
-            Chargement du livre…
-          </p>
+
+          {/* Barre de progression */}
+          <div style={{ width: '100%', maxWidth: 260 }}>
+            <div style={{
+              width: '100%', height: 4, background: 'rgba(255,255,255,0.1)',
+              borderRadius: 2, overflow: 'hidden',
+            }}>
+              <motion.div
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.3 }}
+                style={{ height: '100%', background: color, borderRadius: 2 }}
+              />
+            </div>
+            <p style={{
+              marginTop: 10, textAlign: 'center',
+              fontSize: '0.82rem', color: '#999', fontStyle: 'italic',
+            }}>
+              {progress > 0
+                ? `Chargement… ${progress}%`
+                : 'Connexion au livre…'}
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Erreur */}
+      {/* ── Erreur ── */}
       {error && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', padding: '0 24px' }}>
-          <p style={{ color: '#e88', textAlign: 'center' }}>{error}</p>
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          height: '70vh', padding: '0 24px',
+        }}>
+          <p style={{ color: '#e88', textAlign: 'center', fontSize: '0.9rem' }}>{error}</p>
         </div>
       )}
 
-      {/* Pages */}
+      {/* ── Pages ── */}
       {pdf && width > 0 && Array.from({ length: numPages }, (_, i) => (
         <PdfPage key={i + 1} pdf={pdf} pageNum={i + 1} width={width} />
       ))}
