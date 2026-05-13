@@ -2,6 +2,7 @@ import { cn } from '../../utils/cn'
 
 const TYPE_COLORS = {
   "PAROLE D'ALLAH": { bg: 'rgba(201,168,76,0.15)', border: 'rgba(201,168,76,0.40)', color: '#C9A84C' },
+  "HADITH":         { bg: 'rgba(82,168,139,0.15)', border: 'rgba(82,168,139,0.40)', color: '#52A88B' },
   "INVOCATION":     { bg: 'rgba(78,205,196,0.15)', border: 'rgba(78,205,196,0.40)', color: '#4ECDC4' },
   "SAGESSE":        { bg: 'rgba(165,105,189,0.15)', border: 'rgba(165,105,189,0.40)', color: '#A569BD' },
 }
